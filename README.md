@@ -1,24 +1,78 @@
 # Industrial Defect Classification with Explainable AI
 
-A computer vision portfolio project for **industrial quality control**, focused on detecting steel surface defects using deep learning and preparing the model for explainability with Grad-CAM.
+An end-to-end computer vision project for **industrial quality control**, focused on steel surface defect classification using transfer learning and Explainable AI.
+
+The project builds a CNN-based visual inspection pipeline that classifies steel images as **Defect** or **No Defect**, evaluates the model with quality-control-relevant metrics, and applies **Grad-CAM** to visualize which image regions influenced the model’s decisions.
+
+---
+
+## Key Results
+
+| Area | Result |
+|---|---|
+| Task | Binary steel surface defect classification |
+| Model | MobileNetV2 transfer learning |
+| Test Accuracy | 85.15% |
+| Test Precision | 84.48% |
+| Test Recall | 88.20% |
+| Test F1-score | 86.30% |
+| Explainability | Grad-CAM visual explanations |
+| Critical QC metric | False negatives analyzed |
+
+From an industrial quality control perspective, **recall** is especially important because false negatives represent defective products that may pass inspection as acceptable.
+
+---
+
+## Project Highlights
+
+- Built a complete visual inspection workflow from data exploration to model evaluation and explainability.
+- Converted the original Severstal steel defect dataset into a binary **Defect / No Defect** classification task.
+- Trained a pretrained **MobileNetV2 CNN** using transfer learning.
+- Evaluated model performance using accuracy, precision, recall, F1-score, and confusion matrix.
+- Interpreted model predictions using **Grad-CAM** heatmaps.
+- Documented limitations and future improvements from an industrial deployment perspective.
+
+---
+
+## Grad-CAM Explainability
+
+Grad-CAM was applied to the trained MobileNetV2 model to visualize which image regions contributed most to the model’s prediction.
+
+This helps assess whether the model is focusing on meaningful surface regions instead of relying only on irrelevant background patterns.
+
+![Grad-CAM Examples](results/gradcam_examples.png)
+
+The heatmaps provide a **coarse visual explanation** of the model’s decision. Red and yellow regions indicate stronger contribution to the prediction, while darker regions indicate lower contribution.
+
+Because Grad-CAM is generated from the final convolutional feature maps, it should not be interpreted as exact pixel-level defect localization.
+
+---
 
 ## Project Overview
 
-This project applies a pretrained convolutional neural network to an industrial visual inspection task. The goal is to classify steel surface images as either **Defect** or **No Defect**, and then use Explainable AI methods to understand which image regions influenced the model's decision.
+Industrial visual inspection is a key part of quality control in manufacturing. In real production environments, a model’s prediction is not enough on its own: engineers and operators also need to understand **why** a model made a decision.
 
-The project is designed as a practical demonstration of how deep learning and XAI can support quality control in manufacturing environments.
+This project demonstrates how deep learning and Explainable AI can be combined for industrial defect inspection.
 
-## Why This Project Matters
+The pipeline includes:
 
-In industrial inspection, model accuracy alone is not enough. A model may correctly classify images, but engineers and operators also need to understand **why** a decision was made, especially when decisions affect product quality, rework, scrap, or customer risk.
+```text
+data exploration
+→ binary label preparation
+→ CNN model training
+→ model evaluation
+→ Grad-CAM explainability
+```
 
-This project combines:
+The project is designed as a practical portfolio demonstration at the intersection of:
 
-- Industrial visual inspection
-- Transfer learning with CNNs
-- Binary defect classification
-- Model evaluation using quality-control-relevant metrics
-- Explainability with Grad-CAM as the next development stage
+- Industrial AI
+- Computer vision
+- Quality control
+- Deep learning
+- Explainable AI
+
+---
 
 ## Dataset
 
@@ -41,14 +95,16 @@ data/raw/
 └── sample_submission.csv
 ```
 
-## Project Structure
+---
+
+## Repository Structure
 
 ```text
 industrial-defect-xai-demo/
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
 │   ├── 02_model_training.ipynb
-│   └── 03_gradcam_explainability.ipynb   # planned / in progress
+│   └── 03_gradcam_explainability.ipynb
 │
 ├── models/
 │   └── mobilenetv2_baseline.keras
@@ -56,7 +112,8 @@ industrial-defect-xai-demo/
 ├── results/
 │   ├── training_accuracy.png
 │   ├── training_loss.png
-│   └── confusion_matrix.png
+│   ├── confusion_matrix.png
+│   └── gradcam_examples.png
 │
 ├── data/                                # ignored by GitHub
 ├── .gitignore
@@ -64,17 +121,19 @@ industrial-defect-xai-demo/
 └── README.md
 ```
 
+---
+
 ## Stage 1 — Data Exploration
 
-The first notebook explores the dataset and prepares the binary labels used for training.
+The first notebook explores the dataset and prepares the binary labels used for model training.
 
 Main steps:
 
-- Loaded and inspected the original annotation file
-- Cleaned one problematic row with missing values
-- Created image-level binary labels
-- Checked the distribution of defective and non-defective images
-- Saved the binary labels locally for training
+- Loaded and inspected the original annotation file.
+- Cleaned one problematic row with missing values.
+- Created image-level binary labels.
+- Checked the distribution of defective and non-defective images.
+- Saved the binary labels locally for training.
 
 Dataset summary after preprocessing:
 
@@ -86,23 +145,26 @@ Dataset summary after preprocessing:
 
 The dataset is reasonably balanced for a first binary classification baseline.
 
+---
+
 ## Stage 2 — Model Training
 
-The second notebook trains a baseline deep learning model for binary defect classification.
+The second notebook trains a baseline deep learning model for binary steel defect classification.
 
-Because TensorFlow was not available locally, the actual training was performed in **Google Colab with GPU acceleration**. The notebook and project structure were organized locally using **VS Code** and then pushed to GitHub.
+The model was trained using **Google Colab with GPU acceleration**, while the project structure and notebooks were organized locally in **VS Code** and version-controlled with Git/GitHub.
 
-### Model
+### Model Architecture
 
 The model uses transfer learning with **MobileNetV2 pretrained on ImageNet**.
 
 Architecture summary:
 
-- MobileNetV2 backbone
-- Frozen pretrained feature extractor
-- Global Average Pooling layer
-- Dropout layer
-- Dense sigmoid output for binary classification
+```text
+MobileNetV2 backbone
+→ Global Average Pooling
+→ Dropout
+→ Dense sigmoid output
+```
 
 ### Training Setup
 
@@ -110,13 +172,15 @@ Architecture summary:
 |---|---|
 | Image size | 224 × 224 |
 | Batch size | 32 |
-| Split | 70% train / 15% validation / 15% test |
+| Dataset split | 70% train / 15% validation / 15% test |
 | Optimizer | Adam |
 | Learning rate | 0.0001 |
-| Loss | Binary crossentropy |
+| Loss function | Binary crossentropy |
 | Epochs | 10 |
 
-## Results
+---
+
+## Model Performance
 
 The MobileNetV2 baseline achieved the following results on the test set:
 
@@ -134,85 +198,119 @@ The MobileNetV2 baseline achieved the following results on the test set:
 | Actual No Defect | 724 | 162 |
 | Actual Defect | 118 | 882 |
 
-From an industrial quality control perspective, the most critical error type is the **false negative** case: a defective image classified as non-defective.
+### Industrial Interpretation
 
-In this baseline model, there were **118 false negatives** on the test set.
+In industrial quality control, the most critical error type is usually the **false negative**:
 
-This makes recall especially important, because recall measures how many actual defective images were successfully detected.
+```text
+Actual Defect → Predicted No Defect
+```
 
-## Current Limitations
+This means that a defective product could pass inspection as acceptable.
 
-This is an initial baseline model, so there are several important limitations:
+In this baseline model:
 
-- The original steel strip images are very wide, but they were resized to 224 × 224 for compatibility with MobileNetV2.
-- Square resizing may distort the aspect ratio and reduce sensitivity to small or thin defects.
-- The model currently performs binary classification only, not defect localization or segmentation.
-- Grad-CAM explainability is the next stage and is not yet fully completed.
-- The model has not yet been optimized to reduce false negatives specifically.
+```text
+False negatives = 118
+Recall = 88.20%
+```
 
-## Next Stage — Grad-CAM Explainability
+The model detects most defective images, but future optimization should focus on reducing false negatives further.
 
-The next step is to add Explainable AI using Grad-CAM.
+---
 
-Planned workflow:
+## Stage 3 — Grad-CAM Explainability
+
+The third notebook adds an initial explainability layer using **Grad-CAM**.
+
+Grad-CAM helps visualize the image regions that contributed most to the CNN’s prediction.
+
+The workflow is:
 
 ```text
 load trained model
-choose sample steel images
-predict No Defect / Defect
-generate Grad-CAM heatmaps
-overlay heatmaps on original images
-save Grad-CAM examples
+→ select sample steel images
+→ predict Defect / No Defect
+→ generate Grad-CAM heatmaps
+→ overlay heatmaps on original images
+→ save Grad-CAM examples
 ```
 
-The goal is to visualize which image regions influenced the CNN prediction. This is important in industrial inspection because a model should ideally focus on actual defect regions rather than irrelevant background patterns.
-
-Planned output:
+Output:
 
 ```text
 results/gradcam_examples.png
 ```
 
-## Possible Future Improvements
+This step improves model transparency and supports trust in industrial inspection settings.
 
-Future extensions could include:
+---
 
-- Error analysis of false positives and false negatives
-- Threshold tuning to reduce false negatives
-- Fine-tuning the MobileNetV2 backbone
-- Comparison with other pretrained CNNs such as EfficientNetB0 or ResNet
-- Patch-based classification to better handle wide steel strip images
-- Aspect-ratio-preserving preprocessing
-- Additional XAI methods such as Grad-CAM++, Score-CAM, Integrated Gradients, Occlusion Sensitivity, LIME, or SHAP
-- Comparison between Grad-CAM heatmaps and true defect masks from the original annotations
+## Current Limitations
+
+This is an initial baseline project, so several limitations remain:
+
+- The original steel strip images are very wide, but they were resized to 224 × 224 for compatibility with MobileNetV2.
+- Square resizing may distort the aspect ratio and reduce sensitivity to small or thin defects.
+- The model currently performs binary classification only, not defect localization or segmentation.
+- Grad-CAM provides coarse visual explanations, not precise pixel-level defect localization.
+- The model has not yet been optimized specifically to reduce false negatives.
+- The current approach does not yet compare Grad-CAM heatmaps with the original segmentation masks.
+
+---
+
+## Future Improvements
+
+Possible next steps include:
+
+- Error analysis of false positives and false negatives.
+- Threshold tuning to reduce false negatives.
+- Fine-tuning the MobileNetV2 backbone.
+- Comparison with other pretrained CNNs such as EfficientNetB0 or ResNet.
+- Patch-based classification to better handle wide steel strip images.
+- Aspect-ratio-preserving preprocessing.
+- Additional XAI methods such as Grad-CAM++, Score-CAM, Integrated Gradients, Occlusion Sensitivity, LIME, or SHAP.
+- Comparison between Grad-CAM heatmaps and true defect masks from the original annotations.
+- Extension from binary classification to defect localization or segmentation.
+
+---
 
 ## Skills Demonstrated
 
 This project demonstrates practical experience with:
 
 - Python
-- Data exploration and preprocessing
-- Computer vision for industrial inspection
-- Transfer learning
-- CNN-based binary classification
+- Pandas / NumPy
 - TensorFlow / Keras
-- Google Colab GPU training
+- CNNs and transfer learning
+- MobileNetV2
+- Computer vision for industrial inspection
+- Data exploration and preprocessing
+- Binary classification
 - Model evaluation with accuracy, precision, recall, F1-score, and confusion matrix
+- Industrial interpretation of false positives and false negatives
+- Grad-CAM explainability
+- Google Colab GPU training
+- VS Code
 - Git and GitHub project organization
-- Explainable AI for quality control applications
 
-## Status
+---
+
+## Project Status
 
 | Stage | Status |
 |---|---|
 | Data exploration | Completed |
-| MobileNetV2 training | Completed |
+| Binary label preparation | Completed |
+| MobileNetV2 model training | Completed |
 | Model evaluation | Completed |
-| Grad-CAM explainability | Planned / in progress |
-| README documentation | Completed |
+| Grad-CAM explainability | Completed |
+| GitHub documentation | Completed |
+
+---
 
 ## Project Goal
 
-The purpose of this repository is not only to build a high-performing classifier, but also to show how AI models can become more useful and trustworthy in industrial quality control when combined with explainability methods.
+The goal of this project is not only to build a defect classifier, but to demonstrate how AI models can become more useful, transparent, and trustworthy in industrial quality control when combined with explainability methods.
 
 This project is part of my broader interest in **Industrial AI, visual inspection, quality control, and Explainable AI**.

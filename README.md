@@ -72,7 +72,13 @@ The final XAI notebook examines:
 
 The range `0.40–0.60` is used as a practical **borderline review band**. It is not a formal measure of model uncertainty.
 
-![Grad-CAM examples](results/gradcam_examples.png)
+### Borderline Predictions
+
+![Grad-CAM analysis of borderline predictions](results/borderline_cases_gradcam.png)
+
+### High-Confidence Errors
+
+![Grad-CAM analysis of high-confidence errors](results/high_confidence_errors_gradcam.png)
 
 Grad-CAM provides a coarse visual explanation. It should not be treated as exact pixel-level defect localization or segmentation. The heatmaps are also normalized separately for each image, so their color intensity should not be compared directly across different examples.
 

@@ -3,5 +3,5 @@ pandas
 matplotlib
 scikit-learn
 opencv-python
-tensorflow
+tensorflow==2.20.0
 jupyter

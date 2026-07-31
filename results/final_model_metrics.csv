@@ -1,0 +1,2 @@
+Model,Image Size,Accuracy,Precision,Recall,F1-score,False Positives,False Negatives,True Negatives,True Positives
+MobileNetV2 fine-tuned,128x800,0.9607635206786851,0.9593253968253969,0.967,0.9631474103585658,41,33,845,967
